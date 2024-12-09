@@ -1,9 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
-  "fmt"
-  "math/rand"
+	"math/rand"
+
 	"github.com/gdamore/tcell/v2"
 )
 
@@ -21,6 +22,29 @@ func setupCoins(level int) []*Sprite {
   return coins
 }
 
+func startScreen(screen tcell.Screen) {
+  screen.Clear()
+  drawString(screen, 10, 10, "Welcome to Coin Collector!")
+  drawString(screen, 10, 12, "Press 'S' to start the game")
+  drawString(screen, 10, 14, "Press 'Q' to quit")
+  screen.Show()
+
+  run := true
+  for run {
+    ev := screen.PollEvent()
+    switch ev := ev.(type) {
+      case *tcell.EventKey:
+        switch ev.Rune() {
+          case 's':
+            return
+          case 'q':
+            screen.Fini()
+            run = false
+        }
+    }
+  }
+}
+
 func main () {
 	screen, err := tcell.NewScreen()
 	if err != nil {
@@ -34,6 +58,8 @@ func main () {
 	}
 
 	//game init section
+
+  startScreen(screen)
 
 	player := NewSprite('@', 10, 10)
 
@@ -54,7 +80,7 @@ func main () {
     for _, coin := range coins {
       coin.Draw(screen)
     }
-   
+
     // ui
 
     drawString(screen, 1, 1, fmt.Sprintf("Score: %d", score))
@@ -111,7 +137,7 @@ func main () {
           coins = setupCoins(level)
         }
       }
-    } 
+    }
 
 	}
 }
