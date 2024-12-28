@@ -14,12 +14,13 @@ func drawString(screen tcell.Screen, x, y int, msg string) {
   }
 }
 
-func setupCoins(level int) []*Sprite {
+func setupCoins(level int) ([]*Sprite, int) {
   coins := make([]*Sprite, level+2)
-  for index := range level+2 {
-    coins[index] = NewSprite('O', rand.Intn(20), rand.Intn(20))
+  for i := range coins {
+    coins[i] = NewSprite('O', rand.Intn(20), rand.Intn(20)) // All coins look the same
   }
-  return coins
+  bombIndex := rand.Intn(len(coins)) // Randomly pick the bomb coin
+  return coins, bombIndex
 }
 
 func startScreen(screen tcell.Screen) {
@@ -58,12 +59,11 @@ func main () {
 	}
 
 	//game init section
-
   startScreen(screen)
 
 	player := NewSprite('@', 10, 10)
 
-  coins := setupCoins(1)
+  coins, bombIndex := setupCoins(1)
 
   score := 0
   level := 1
@@ -72,7 +72,6 @@ func main () {
 	running := true
 	for running {
 		//draw logic
-
 		screen.Clear()
 
 		player.Draw(screen)
@@ -82,7 +81,6 @@ func main () {
     }
 
     // ui
-
     drawString(screen, 1, 1, fmt.Sprintf("Score: %d", score))
     drawString(screen, 1, 2, fmt.Sprintf("Level: %d", level))
 
@@ -118,26 +116,60 @@ func main () {
     // check for coin collisions
     if playerMoved {
       coinCollectedIndex := -1
+      isBomb := false
+
+      // Check if the player collects a coin
       for index, coin := range coins {
         if coin.X == player.X && coin.Y == player.Y {
-          // collect coin
           coinCollectedIndex = index
-          score++
+          isBomb = (index == bombIndex)
+          break
         }
       }
-      // handle coin collisions
-      if coinCollectedIndex > -1 {
-        // swap target with last
-        coins[coinCollectedIndex] = coins[len(coins)-1]
-        // trim off last item
-        coins = coins[0:len(coins)-1]
 
-        if len(coins) == 0{
-          level++
-          coins = setupCoins(level)
+      if coinCollectedIndex > -1 {
+        if isBomb {
+          if len(coins) == 1 {
+            // Bomb is the last coin; show message and progress to next level
+            screen.Clear()
+            drawString(screen, 10, 10, "You found the bomb, but completed the level!")
+            drawString(screen, 10, 12, "Press any key to continue to next level")
+            screen.Show()
+            screen.PollEvent() // Wait for key press
+
+            // Progress to next level
+            level++
+            coins, bombIndex = setupCoins(level)
+            score++
+          } else {
+            // Bomb collected and other coins remain: Game Over
+            screen.Clear()
+            drawString(screen, 10, 10, "Game Over! You hit a bomb!")
+            drawString(screen, 10, 12, fmt.Sprintf("Final Score: %d", score))
+            drawString(screen, 10, 14, "Press any key to exit")
+            screen.Show()
+            screen.PollEvent() // Wait for user input before exiting
+            return
+          }
+        } else {
+          // Regular coin collected
+          score++
+          // Remove the collected coin
+          coins[coinCollectedIndex] = coins[len(coins)-1]
+          coins = coins[:len(coins)-1]
+
+          // If the bomb was the last coin in the array, update its index
+          if bombIndex == len(coins) {
+            bombIndex = coinCollectedIndex
+          }
+
+          // Check if all coins are collected
+          if len(coins) == 0 {
+            level++
+            coins, bombIndex = setupCoins(level)
+          }
         }
       }
     }
-
-	}
+  }
 }
