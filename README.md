@@ -1,112 +1,124 @@
-# Goterme
+# Coin Collector Game
 
-## Overview
+Coin Collector is a terminal-based game where the player collects coins to progress through levels while avoiding the hidden bomb coin. If the player collects the bomb coin and it’s the last coin, the level progresses; otherwise, the game ends.
 
-This is a simple terminal-based coin collection game developed in Go, utilizing the `tcell` package for creating an interactive terminal user interface. Players navigate a character through a grid, collecting coins and progressing through increasingly challenging levels.
+---
 
 ## Features
 
-- Terminal-based gameplay using `tcell` for screen rendering
-- Player movement with WASD keys
-- Dynamic coin generation
-- Scoring system
-- Increasing difficulty with each level
-- Simple, minimalist design
+- **Dynamic Levels**: Levels increase in difficulty as more coins are added.
+- **Bomb Coin Challenge**: One coin is secretly a bomb. Collecting it prematurely ends the game!
+- **Intuitive Controls**: Move the player character (`@`) using `W`, `A`, `S`, `D` keys.
+- **Game Over Handling**: Displays a final score and exit prompt upon losing.
+- **Level Progression**: Successfully collecting all coins, including the bomb as the last coin, advances to the next level.
 
-## Prerequisites
+---
 
-- Go (version 1.16 or newer)
-- `tcell` package (`github.com/gdamore/tcell/v2`)
+## Demo
+
+### Start Screen
+
+```
+Welcome to Coin Collector!
+Press 'S' to start the game
+Press 'Q' to quit
+```
+
+### In-Game
+
+- The player character: `@`
+- Coins: `O`
+- Bomb Coin: Looks identical to regular coins.
+
+### Game Over
+
+```
+Game Over! You hit a bomb!
+Final Score: <score>
+Press any key to exit
+```
+
+---
+
+## Controls
+
+| Key | Action        |
+| --- | ------------- |
+| `W` | Move Up       |
+| `A` | Move Left     |
+| `S` | Move Down     |
+| `D` | Move Right    |
+| `Q` | Quit the Game |
+
+---
 
 ## Installation
 
-1. Ensure Go is installed on your system
-2. Clone the repository
-3. Install dependencies:
+### Prerequisites
 
-```bash
-go mod tidy
-go get github.com/gdamore/tcell/v2
-```
+- Go programming language installed
+- Terminal that supports ANSI escape codes
+- `tcell` library
 
-## How to Play
+### Steps
 
-### Controls
+1. Clone the repository:
 
-- `W`: Move Up
-- `A`: Move Left
-- `S`: Move Down
-- `D`: Move Right
-- `Q`: Quit the game
+   ```bash
+   git clone <repository-url>
+   cd coin-collector
+   ```
 
-### Objective
+2. Install dependencies:
 
-- Collect all coins on the screen to advance to the next level
-- Each collected coin increases your score
-- The number of coins increases with each level
+   ```bash
+   go get github.com/gdamore/tcell/v2
+   ```
 
-## Game Mechanics
+3. Run the game:
+   ```bash
+   go run main.go
+   ```
 
-### Sprite System
-
-The game uses a custom `Sprite` system to represent game entities:
-
-- Player is represented by `@`
-- Coins are represented by `O`
-- Sprites have X and Y coordinates for positioning
-
-### Level Progression
-
-- Initial game starts at Level 1
-- Collecting all coins advances to the next level
-- Each new level generates more coins at random positions
-
-### Scoring
-
-- Score increases by 1 for each coin collected
-- Current score and level are displayed on the screen
+---
 
 ## Code Structure
 
-### Key Components
+- **`main.go`**: Contains the game logic, rendering, and input handling.
+- **Key Functions**:
+  - `setupCoins(level int)`: Sets up coins for the current level and designates a bomb coin.
+  - `drawString(screen, x, y, msg)`: Draws strings to the terminal.
+  - `startScreen(screen)`: Displays the welcome screen.
+  - Game loop handles player movements, coin collection, and level progression.
 
-- `main.go`: Primary game logic
-- `setupCoins()`: Generates coins for each level
-- `drawString()`: Renders text on the screen
-- Game loop handles:
-  1. Screen rendering
-  2. Player movement
-  3. Coin collection
-  4. Level progression
+---
 
-## Potential Improvements
+## Gameplay Rules
 
-- Add obstacles
-- Implement player lives
-- Create more complex level generation
-- Add color and visual enhancements
-- Implement a high score system
+1. **Objective**: Collect all coins to progress to the next level.
+2. **Bomb Coin**:
+   - Appears identical to regular coins.
+   - If collected prematurely (while other coins remain), ends the game.
+   - If collected last, progresses to the next level.
+3. **Scoring**: Gain one point for every coin collected.
 
-## Dependencies
+---
 
-- [tcell](https://github.com/gdamore/tcell): Terminal screen handling library
+## Future Enhancements
 
-## Running the Game
+- [] Add a timer for each level.
+- [] Introduce obstacles or moving enemies.
+- [] Display a leaderboard for high scores.
+- [] Add sound effects or animations.
 
-```bash
-go run main.go
-```
+---
 
-## Contributing
+## Contribution
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Feel free to fork this repository, submit issues, or create pull requests for improvements and bug fixes.
 
-1. Fork the repository
-2. Create your feature branch `(git checkout -b feature/AmazingFeature)`
-3. Commit your changes `(git commit -m 'Add some AmazingFeature')`
-4. Push to the branch `(git push origin feature/AmazingFeature)`
-5. Open a Pull Request
+---
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See `LICENSE` for details.
