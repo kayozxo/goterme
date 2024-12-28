@@ -65,7 +65,7 @@ Press any key to exit
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/kayozxo/goterme.git
    cd coin-collector
    ```
 
@@ -106,10 +106,10 @@ Press any key to exit
 
 ## Future Enhancements
 
-- [] Add a timer for each level.
-- [] Introduce obstacles or moving enemies.
-- [] Display a leaderboard for high scores.
-- [] Add sound effects or animations.
+- [ ] Add a timer for each level.
+- [ ] Introduce obstacles or moving enemies.
+- [ ] Display a leaderboard for high scores.
+- [ ] Add sound effects or animations.
 
 ---
 
